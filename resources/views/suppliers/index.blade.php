@@ -1,13 +1,16 @@
 @extends('layouts.app')
 
-@section('title', 'Data Supplier')
+@section('title', 'Maison & Distributor')
 
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h5 class="fw-bold mb-0">Data Supplier</h5>
+    <div>
+        <h5 class="fw-bold mb-1 font-serif">Maison & Distributor Resmi</h5>
+        <p class="text-muted small mb-0">Atelier mode dan mitra distribusi resmi Louboutin, Paciotti, Blahnik, Choo, dan Muaddi.</p>
+    </div>
     @if(Auth::user()->role === 'admin')
         <a href="{{ route('suppliers.create') }}" class="btn btn-primary btn-sm">
-            <i class="bi bi-plus-lg me-1"></i> Tambah Supplier
+            <i class="bi bi-plus-lg me-1"></i> Tambah Mitra Maison
         </a>
     @endif
 </div>
@@ -18,11 +21,11 @@
             <thead>
                 <tr>
                     <th style="width: 50px;">No</th>
-                    <th>Nama Supplier</th>
-                    <th>Kontak</th>
-                    <th>Telepon</th>
-                    <th>Alamat</th>
-                    <th class="text-center">Produk</th>
+                    <th>Nama Maison / Distributor</th>
+                    <th>Perwakilan Kontak</th>
+                    <th>Hotline / Telepon</th>
+                    <th>Atelier / Alamat</th>
+                    <th class="text-center">Koleksi Terkait</th>
                     @if(Auth::user()->role === 'admin')
                         <th class="text-end" style="width: 80px;">Aksi</th>
                     @endif

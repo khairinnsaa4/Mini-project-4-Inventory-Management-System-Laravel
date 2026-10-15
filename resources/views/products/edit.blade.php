@@ -1,12 +1,15 @@
 @extends('layouts.app')
 
-@section('title', 'Edit Produk')
+@section('title', 'Edit Koleksi Heels')
 
 @section('content')
 <div class="row justify-content-center">
     <div class="col-lg-8">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h5 class="fw-bold mb-0">Edit Produk</h5>
+            <div>
+                <h5 class="fw-bold mb-1 font-serif">Edit Koleksi Heels</h5>
+                <p class="text-muted small mb-0">Perbarui spesifikasi, harga butik, dan batasan stok.</p>
+            </div>
             <a href="{{ route('products.index') }}" class="btn btn-outline-secondary btn-sm">
                 Kembali
             </a>
@@ -20,14 +23,14 @@
                 <div class="row g-3">
                     <div class="col-md-6">
                         <label class="form-label">Kode SKU <span class="text-danger">*</span></label>
-                        <input type="text" name="sku" class="form-control @error('sku') is-invalid @enderror" value="{{ old('sku', $product->sku) }}" required>
+                        <input type="text" name="sku" class="form-control font-monospace @error('sku') is-invalid @enderror" value="{{ old('sku', $product->sku) }}" required>
                         @error('sku')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
 
                     <div class="col-md-6">
-                        <label class="form-label">Kategori <span class="text-danger">*</span></label>
+                        <label class="form-label">Kategori Siluet <span class="text-danger">*</span></label>
                         <select name="category_id" class="form-select @error('category_id') is-invalid @enderror" required>
                             @foreach($categories as $c)
                                 <option value="{{ $c->id }}" {{ (string)old('category_id', $product->category_id) === (string)$c->id ? 'selected' : '' }}>
@@ -41,7 +44,7 @@
                     </div>
 
                     <div class="col-12">
-                        <label class="form-label">Nama Produk <span class="text-danger">*</span></label>
+                        <label class="form-label">Nama Model Heels <span class="text-danger">*</span></label>
                         <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name', $product->name) }}" required>
                         @error('name')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -49,7 +52,7 @@
                     </div>
 
                     <div class="col-md-4">
-                        <label class="form-label">Harga (Rp) <span class="text-danger">*</span></label>
+                        <label class="form-label">Harga Butik (Rp) <span class="text-danger">*</span></label>
                         <input type="number" step="100" min="0" name="price" class="form-control @error('price') is-invalid @enderror" value="{{ old('price', $product->price) }}" required>
                         @error('price')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -57,8 +60,8 @@
                     </div>
 
                     <div class="col-md-4">
-                        <label class="form-label">Stok Fisik</label>
-                        <input type="text" class="form-control bg-light" value="{{ $product->stock }}" disabled>
+                        <label class="form-label">Stok Fisik (Pairs)</label>
+                        <input type="text" class="form-control bg-light" value="{{ $product->stock }} Pairs" disabled>
                     </div>
 
                     <div class="col-md-4">
@@ -70,7 +73,7 @@
                     </div>
 
                     <div class="col-12">
-                        <label class="form-label">Pemasok / Supplier</label>
+                        <label class="form-label">Maison & Distributor Resmi</label>
                         <div class="p-3 bg-light rounded-2 border">
                             <div class="row g-2">
                                 @forelse($suppliers as $s)

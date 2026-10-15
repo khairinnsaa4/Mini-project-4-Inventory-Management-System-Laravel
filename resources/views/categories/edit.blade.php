@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
-@section('title', 'Edit Kategori')
+@section('title', 'Edit Siluet')
 
 @section('content')
 <div class="row justify-content-center">
     <div class="col-md-6">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h5 class="fw-bold mb-0">Edit Kategori</h5>
+            <h5 class="fw-bold mb-0 font-serif">Edit Kategori Siluet</h5>
             <a href="{{ route('categories.index') }}" class="btn btn-outline-secondary btn-sm">
                 Kembali
             </a>
@@ -17,7 +17,7 @@
                 @csrf
                 @method('PUT')
                 <div class="mb-3">
-                    <label class="form-label">Nama Kategori <span class="text-danger">*</span></label>
+                    <label class="form-label">Nama Siluet / Kategori <span class="text-danger">*</span></label>
                     <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name', $category->name) }}" required>
                     @error('name')
                         <div class="invalid-feedback">{{ $message }}</div>

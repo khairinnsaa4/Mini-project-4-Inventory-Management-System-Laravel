@@ -1,16 +1,19 @@
 @extends('layouts.app')
 
-@section('title', 'Riwayat Mutasi')
+@section('title', 'Ledger Mutasi & Penjualan')
 
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h5 class="fw-bold mb-0">Riwayat Mutasi</h5>
+    <div>
+        <h5 class="fw-bold mb-1 font-serif">Ledger Transaksi & Mutasi Butik</h5>
+        <p class="text-muted small mb-0">Catatan kronologis real-time pergerakan inventaris dan penjualan heels.</p>
+    </div>
     <div class="d-flex gap-2">
-        <a href="{{ route('stock.in') }}" class="btn btn-primary btn-sm">
-            <i class="bi bi-plus-lg me-1"></i> Stok Masuk
+        <a href="{{ route('stock.in') }}" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-box-arrow-in-down me-1"></i> Restock Masuk
         </a>
-        <a href="{{ route('stock.out') }}" class="btn btn-outline-secondary btn-sm">
-            Stok Keluar
+        <a href="{{ route('stock.out') }}" class="btn btn-primary btn-sm">
+            <i class="bi bi-bag-check me-1"></i> VIP Checkout
         </a>
     </div>
 </div>
@@ -18,15 +21,15 @@
 <!-- Filter Tipe Mutasi -->
 <div class="card p-3 mb-3">
     <div class="d-flex align-items-center gap-2">
-        <span class="small text-muted me-1">Filter:</span>
+        <span class="small text-muted me-1">Filter Ledger:</span>
         <a href="{{ route('stock.history') }}" class="btn btn-sm {{ empty($type) ? 'btn-secondary' : 'btn-light border' }}">
-            Semua
+            Semua Transaksi
         </a>
         <a href="{{ route('stock.history', ['type' => 'IN']) }}" class="btn btn-sm {{ $type === 'IN' ? 'btn-success' : 'btn-light border' }}">
-            Masuk
+            <i class="bi bi-arrow-down-left me-1"></i> Restock (Masuk)
         </a>
         <a href="{{ route('stock.history', ['type' => 'OUT']) }}" class="btn btn-sm {{ $type === 'OUT' ? 'btn-danger' : 'btn-light border' }}">
-            Keluar
+            <i class="bi bi-arrow-up-right me-1"></i> Terjual (Keluar)
         </a>
     </div>
 </div>

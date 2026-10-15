@@ -1,13 +1,16 @@
 @extends('layouts.app')
 
-@section('title', 'Kategori')
+@section('title', 'Kategori Siluet')
 
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h5 class="fw-bold mb-0">Kategori Produk</h5>
+    <div>
+        <h5 class="fw-bold mb-1 font-serif">Kategori & Siluet Heels</h5>
+        <p class="text-muted small mb-0">Klasifikasi siluet heels: Stiletto, Bridal, Mules, Sculptural, dan Platform.</p>
+    </div>
     @if(Auth::user()->role === 'admin')
         <a href="{{ route('categories.create') }}" class="btn btn-primary btn-sm">
-            <i class="bi bi-plus-lg me-1"></i> Tambah Kategori
+            <i class="bi bi-plus-lg me-1"></i> Tambah Siluet
         </a>
     @endif
 </div>
@@ -18,10 +21,10 @@
             <thead>
                 <tr>
                     <th style="width: 50px;">No</th>
-                    <th>Nama Kategori</th>
-                    <th>Deskripsi</th>
-                    <th class="text-center">Jumlah Item</th>
-                    <th class="text-center">Total Stok</th>
+                    <th>Nama Siluet / Kategori</th>
+                    <th>Karakteristik & Deskripsi</th>
+                    <th class="text-center">Jumlah Model</th>
+                    <th class="text-center">Total Stok (Pairs)</th>
                     @if(Auth::user()->role === 'admin')
                         <th class="text-end" style="width: 100px;">Aksi</th>
                     @endif

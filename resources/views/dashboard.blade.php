@@ -1,170 +1,370 @@
 @extends('layouts.app')
 
-@section('title', 'Dashboard')
+@section('title', 'Dashboard Atelier')
 
 @section('content')
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h5 class="fw-bold mb-0">Dashboard</h5>
-    <div class="d-flex gap-2">
-        <a href="{{ route('stock.in') }}" class="btn btn-primary btn-sm">
-            <i class="bi bi-plus-lg me-1"></i> Stok Masuk
-        </a>
-        <a href="{{ route('stock.out') }}" class="btn btn-outline-secondary btn-sm">
-            Stok Keluar
+<!-- Header Atas Dashboard -->
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+    <div>
+        <h3 class="fw-bold mb-1 font-serif text-dark">Executive Atelier Dashboard</h3>
+        <p class="text-muted small mb-0">Pemantauan persediaan sepatu heels mewah, perputaran stok konsinyasi, dan grafik penjualan real-time (Laravel MVC).</p>
+    </div>
+    <div class="d-flex flex-wrap gap-2">
+        <!-- Tombol Simulasi Penjualan Otomatis (Real-time Auto-Sales Bot) -->
+        <form method="POST" action="{{ route('stock.autoSale') }}" class="d-inline">
+            @csrf
+            <button type="submit" class="btn btn-outline-danger btn-sm d-flex align-items-center gap-1 shadow-sm px-3" title="Simulasi transaksi otomatis tanpa input manual">
+                <i class="bi bi-cpu-fill"></i>
+                <span>Simulasi Terjual Otomatis</span>
+            </button>
+        </form>
+
+        <a href="{{ route('stock.in') }}" class="btn btn-primary btn-sm d-flex align-items-center gap-1 shadow-sm px-3">
+            <i class="bi bi-box-arrow-in-down"></i> Restock Butik
         </a>
     </div>
 </div>
 
-<!-- 4 Kartu Metrik -->
+<!-- 4 Kartu Metrik Utama -->
 <div class="row g-3 mb-4">
-    <div class="col-sm-6 col-lg-3">
+    <div class="col-12 col-sm-6 col-xl-3">
         <div class="card p-3 h-100">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-                <span class="text-muted small fw-medium text-uppercase">Total Produk</span>
-                <i class="bi bi-box text-primary"></i>
-            </div>
-            <div class="fs-4 fw-bold text-dark">{{ number_format($total_produk) }}</div>
-        </div>
-    </div>
-
-    <div class="col-sm-6 col-lg-3">
-        <div class="card p-3 h-100">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-                <span class="text-muted small fw-medium text-uppercase">Nilai Aset</span>
-                <i class="bi bi-wallet2 text-success"></i>
-            </div>
-            <div class="fs-4 fw-bold text-dark">Rp {{ number_format($total_nilai, 0, ',', '.') }}</div>
-        </div>
-    </div>
-
-    <div class="col-sm-6 col-lg-3">
-        <div class="card p-3 h-100">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-                <span class="text-muted small fw-medium text-uppercase">Stok Menipis</span>
-                <i class="bi bi-exclamation-triangle text-warning"></i>
-            </div>
-            <div class="fs-4 fw-bold {{ $total_low_stock > 0 ? 'text-warning' : 'text-dark' }}">
-                {{ number_format($total_low_stock) }}
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <span class="text-muted text-uppercase fw-semibold" style="font-size: 0.7rem; letter-spacing: 0.6px;">Koleksi Heels</span>
+                    <h3 class="fw-bold my-1 font-serif text-dark">{{ number_format($total_produk) }}</h3>
+                    <span class="badge badge-luxury rounded-pill">Model Terdaftar</span>
+                </div>
+                <div class="stat-card-icon" style="background-color: #FDF2F4; color: var(--rouge-primary);">
+                    <i class="bi bi-handbag"></i>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="col-sm-6 col-lg-3">
+    <div class="col-12 col-sm-6 col-xl-3">
         <div class="card p-3 h-100">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-                <span class="text-muted small fw-medium text-uppercase">Total Mutasi</span>
-                <i class="bi bi-arrow-left-right text-secondary"></i>
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <span class="text-muted text-uppercase fw-semibold" style="font-size: 0.7rem; letter-spacing: 0.6px;">Valuasi Inventaris</span>
+                    <h4 class="fw-bold my-1 font-serif text-dark" style="font-size: 1.3rem;">Rp {{ number_format($total_nilai, 0, ',', '.') }}</h4>
+                    <span class="badge badge-gold rounded-pill">Nilai Koleksi Butik</span>
+                </div>
+                <div class="stat-card-icon" style="background-color: #FAF4E8; color: #8C6D2B;">
+                    <i class="bi bi-gem"></i>
+                </div>
             </div>
-            <div class="fs-4 fw-bold text-dark d-flex gap-3">
-                <span class="text-success small fw-semibold">+{{ number_format($total_in) }}</span>
-                <span class="text-danger small fw-semibold">-{{ number_format($total_out) }}</span>
+        </div>
+    </div>
+
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="card p-3 h-100">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <span class="text-muted text-uppercase fw-semibold" style="font-size: 0.7rem; letter-spacing: 0.6px;">Restock & Terjual</span>
+                    <h3 class="fw-bold my-1 font-serif text-dark">
+                        <span class="text-success">+{{ number_format($total_in) }}</span> 
+                        <span class="text-muted fs-6 font-monospace">/</span> 
+                        <span class="text-danger">-{{ number_format($total_out) }}</span>
+                    </h3>
+                    <span class="text-muted small">Total Unit (IN / OUT)</span>
+                </div>
+                <div class="stat-card-icon" style="background-color: #F0FDF4; color: #16A34A;">
+                    <i class="bi bi-arrow-left-right"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="card p-3 h-100">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <span class="text-muted text-uppercase fw-semibold" style="font-size: 0.7rem; letter-spacing: 0.6px;">Alert Stok Kritis</span>
+                    <h3 class="fw-bold my-1 font-serif {{ ($total_low_stock > 0) ? 'text-danger' : 'text-dark' }}">
+                        {{ number_format($total_low_stock) }}
+                    </h3>
+                    <span class="badge {{ ($total_low_stock > 0) ? 'bg-danger text-white' : 'bg-success text-white' }} rounded-pill">
+                        {{ ($total_low_stock > 0) ? 'Wajib Re-order' : 'Stok Terjaga' }}
+                    </span>
+                </div>
+                <div class="stat-card-icon" style="background-color: {{ ($total_low_stock > 0) ? '#FEF2F2' : '#F0FDF4' }}; color: {{ ($total_low_stock > 0) ? '#DC2626' : '#16A34A' }};">
+                    <i class="bi bi-bell"></i>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<div class="row g-4">
-    <!-- Kolom Kiri: Peringatan Stok Menipis -->
-    <div class="col-lg-6">
-        <div class="card h-100">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <span>Stok Perlu Perhatian</span>
-                <span class="badge text-bg-light border">{{ $low_stock_products->count() }}</span>
+<!-- BAGIAN GRAFIK INTERAKTIF (Chart.js Sesuai Permintaan) -->
+<div class="row g-4 mb-4">
+    <!-- Grafik 1: Tren Penjualan & Restock 7 Hari Terakhir -->
+    <div class="col-12 col-lg-8">
+        <div class="card p-3 h-100">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                    <h6 class="fw-bold mb-0 font-serif">Aktivitas Perputaran Heels (7 Hari Terakhir)</h6>
+                    <small class="text-muted">Perbandingan unit Restock Masuk (IN) vs Unit Terjual (OUT)</small>
+                </div>
+                <span class="badge badge-luxury"><i class="bi bi-graph-up me-1"></i> Real-time</span>
             </div>
-            <div class="table-responsive">
-                <table class="table table-custom">
-                    <thead>
-                        <tr>
-                            <th>Produk</th>
-                            <th>Kategori</th>
-                            <th class="text-center">Sisa</th>
-                            <th class="text-center">Min</th>
-                            <th class="text-end">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($low_stock_products as $prod)
-                            <tr>
-                                <td>
-                                    <div class="fw-medium text-dark">{{ $prod->name }}</div>
-                                    <span class="text-muted small font-monospace">{{ $prod->sku }}</span>
-                                </td>
-                                <td><span class="badge text-bg-light border">{{ $prod->category->name }}</span></td>
-                                <td class="text-center">
-                                    <span class="badge bg-danger-subtle text-danger border-0 fw-semibold">
-                                        {{ $prod->stock }}
-                                    </span>
-                                </td>
-                                <td class="text-center text-muted small">{{ $prod->minimum_stock }}</td>
-                                <td class="text-end">
-                                    <a href="{{ route('stock.in', ['product_id' => $prod->id]) }}" class="btn btn-light btn-sm border py-0 px-2" style="font-size: 0.8rem;">
-                                        Restock
-                                    </a>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="5" class="text-center py-4 text-muted small">
-                                    Semua stok dalam kondisi aman.
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+            <div style="height: 280px; position: relative;">
+                <canvas id="salesMovementChartLaravel"></canvas>
             </div>
         </div>
     </div>
 
-    <!-- Kolom Kanan: Mutasi Terakhir -->
-    <div class="col-lg-6">
+    <!-- Grafik 2: Komposisi Koleksi Kategori Heels -->
+    <div class="col-12 col-lg-4">
+        <div class="card p-3 h-100">
+            <div class="mb-3">
+                <h6 class="fw-bold mb-0 font-serif">Distribusi Kategori Heels</h6>
+                <small class="text-muted">Porsi persediaan stok per siluet desain</small>
+            </div>
+            <div style="height: 240px; position: relative;">
+                <canvas id="categoryDoughnutChartLaravel"></canvas>
+            </div>
+            <div class="text-center mt-2">
+                <span class="text-muted small" style="font-size: 0.75rem;"><i class="bi bi-info-circle me-1"></i> Data di-update otomatis dari database</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 2 Kolom Bawah: Peringatan Stok Rendah & Riwayat Aktivitas Buku Besar -->
+<div class="row g-4">
+    <!-- Peringatan Stok Menipis -->
+    <div class="col-12 col-lg-5">
         <div class="card h-100">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <span>Aktivitas Mutasi Terkini</span>
-                <a href="{{ route('stock.history') }}" class="small text-decoration-none">
-                    Semua &rarr;
+                <span class="font-serif fw-bold"><i class="bi bi-exclamation-circle text-danger me-2"></i>Koleksi Perlu Re-order</span>
+                <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-2 py-1">
+                    {{ $low_stock_products->count() }} Model
+                </span>
+            </div>
+            <div class="card-body p-0">
+                @if($low_stock_products->isEmpty())
+                    <div class="text-center py-5 text-muted small">
+                        <i class="bi bi-shield-check text-success fs-2 d-block mb-2"></i>
+                        Semua persediaan heels berada di atas batas aman.
+                    </div>
+                @else
+                    <div class="table-responsive">
+                        <table class="table table-custom mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Model Heels</th>
+                                    <th class="text-center">Sisa</th>
+                                    <th class="text-end">Aksi Cepat</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($low_stock_products as $p)
+                                    <tr>
+                                        <td>
+                                            <div class="fw-semibold text-dark">{{ $p->name }}</div>
+                                            <div class="text-muted small font-monospace" style="font-size: 0.72rem;">{{ $p->sku }}</div>
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="badge bg-danger rounded-pill px-2">{{ $p->stock }} psg</span>
+                                        </td>
+                                        <td class="text-end">
+                                            <a href="{{ route('stock.in', ['product_id' => $p->id]) }}" class="btn btn-outline-primary btn-sm py-1 px-2" style="font-size: 0.75rem;">
+                                                <i class="bi bi-plus-lg me-1"></i>Restock
+                                            </a>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                @endif
+            </div>
+        </div>
+    </div>
+
+    <!-- Aktivitas Buku Besar Mutasi Terkini -->
+    <div class="col-12 col-lg-7">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span class="font-serif fw-bold"><i class="bi bi-journal-bookmark text-secondary me-2"></i>Buku Besar Transaksi Terakhir</span>
+                <a href="{{ route('stock.history') }}" class="small text-decoration-none fw-semibold" style="color: var(--rouge-primary);">
+                    Lihat Semua <i class="bi bi-arrow-right"></i>
                 </a>
             </div>
-            <div class="table-responsive">
-                <table class="table table-custom">
-                    <thead>
-                        <tr>
-                            <th>Waktu</th>
-                            <th>Produk</th>
-                            <th>Tipe</th>
-                            <th class="text-center">Qty</th>
-                            <th>User</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($recent_movements as $m)
-                            <tr>
-                                <td class="small text-muted font-monospace">
-                                    {{ $m->created_at->format('d/m H:i') }}
-                                </td>
-                                <td>
-                                    <div class="fw-medium text-dark text-truncate" style="max-width: 160px;">{{ $m->product->name }}</div>
-                                </td>
-                                <td>
-                                    <span class="badge {{ $m->type === 'IN' ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger' }} border-0">
-                                        {{ $m->type }}
-                                    </span>
-                                </td>
-                                <td class="text-center fw-semibold {{ $m->type === 'IN' ? 'text-success' : 'text-danger' }}">
-                                    {{ $m->type === 'IN' ? '+' : '-' }}{{ $m->quantity }}
-                                </td>
-                                <td class="small text-muted">@{{ $m->user->username }}</td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="5" class="text-center py-4 text-muted small">
-                                    Belum ada transaksi.
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+            <div class="card-body p-0">
+                @if($recent_movements->isEmpty())
+                    <div class="text-center py-5 text-muted small">Belum ada catatan mutasi heels.</div>
+                @else
+                    <div class="table-responsive">
+                        <table class="table table-custom mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Tipe</th>
+                                    <th>Model & SKU</th>
+                                    <th class="text-center">Jumlah</th>
+                                    <th>Catatan / Faktur</th>
+                                    <th class="text-end">Waktu</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($recent_movements as $m)
+                                    <tr>
+                                        <td>
+                                            @if($m->type === 'IN')
+                                                <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1">
+                                                    <i class="bi bi-arrow-down-left"></i> Restock
+                                                </span>
+                                            @else
+                                                <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-2 py-1">
+                                                    <i class="bi bi-bag-check"></i> Terjual
+                                                </span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            <div class="fw-semibold text-dark">{{ $m->product->name ?? 'Produk Dihapus' }}</div>
+                                            <div class="text-muted font-monospace" style="font-size: 0.72rem;">{{ $m->product->sku ?? '-' }}</div>
+                                        </td>
+                                        <td class="text-center fw-bold {{ ($m->type === 'IN') ? 'text-success' : 'text-danger' }}">
+                                            {{ ($m->type === 'IN' ? '+' : '-') . $m->quantity }} psg
+                                        </td>
+                                        <td>
+                                            <small class="text-muted d-block text-truncate" style="max-width: 220px;" title="{{ $m->notes }}">
+                                                {{ $m->notes }}
+                                            </small>
+                                        </td>
+                                        <td class="text-end text-muted small" style="font-size: 0.75rem;">
+                                            {{ $m->created_at->format('d M H:i') }}
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                @endif
             </div>
         </div>
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // 1. Line Chart: Tren Mutasi & Penjualan (Restock IN vs Terjual OUT)
+    const ctxSales = document.getElementById('salesMovementChartLaravel').getContext('2d');
+    
+    const gradSales = ctxSales.createLinearGradient(0, 0, 0, 250);
+    gradSales.addColorStop(0, 'rgba(139, 21, 56, 0.25)');
+    gradSales.addColorStop(1, 'rgba(139, 21, 56, 0.0)');
+
+    const gradRestock = ctxSales.createLinearGradient(0, 0, 0, 250);
+    gradRestock.addColorStop(0, 'rgba(197, 160, 89, 0.25)');
+    gradRestock.addColorStop(1, 'rgba(197, 160, 89, 0.0)');
+
+    new Chart(ctxSales, {
+        type: 'line',
+        data: {
+            labels: {!! json_encode($chartDates) !!},
+            datasets: [
+                {
+                    label: 'Unit Terjual (OUT)',
+                    data: {!! json_encode($chartSales) !!},
+                    borderColor: '#8B1538',
+                    backgroundColor: gradSales,
+                    borderWidth: 2.5,
+                    tension: 0.35,
+                    fill: true,
+                    pointBackgroundColor: '#8B1538',
+                    pointRadius: 4,
+                    pointHoverRadius: 6
+                },
+                {
+                    label: 'Restock Masuk (IN)',
+                    data: {!! json_encode($chartRestock) !!},
+                    borderColor: '#C5A059',
+                    backgroundColor: gradRestock,
+                    borderWidth: 2,
+                    tension: 0.35,
+                    fill: true,
+                    pointBackgroundColor: '#C5A059',
+                    pointRadius: 4,
+                    pointHoverRadius: 6
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: {
+                        boxWidth: 12,
+                        font: { family: "'Plus Jakarta Sans', sans-serif", size: 12 }
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return context.dataset.label + ': ' + context.parsed.y + ' pasang';
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 2,
+                        font: { family: "'Plus Jakarta Sans', sans-serif", size: 11 }
+                    },
+                    grid: { color: '#F0E9E4' }
+                },
+                x: {
+                    ticks: {
+                        font: { family: "'Plus Jakarta Sans', sans-serif", size: 11 }
+                    },
+                    grid: { display: false }
+                }
+            }
+        }
+    });
+
+    // 2. Doughnut Chart: Distribusi Kategori Heels
+    const ctxCat = document.getElementById('categoryDoughnutChartLaravel').getContext('2d');
+    new Chart(ctxCat, {
+        type: 'doughnut',
+        data: {
+            labels: {!! json_encode($catLabels) !!},
+            datasets: [{
+                data: {!! json_encode($catStocks) !!},
+                backgroundColor: [
+                    '#8B1538',
+                    '#C5A059',
+                    '#27272A',
+                    '#A84B66',
+                    '#E5C58A'
+                ],
+                borderWidth: 2,
+                borderColor: '#FFFFFF'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        boxWidth: 10,
+                        font: { family: "'Plus Jakarta Sans', sans-serif", size: 10 }
+                    }
+                }
+            },
+            cutout: '68%'
+        }
+    });
+});
+</script>
+@endpush

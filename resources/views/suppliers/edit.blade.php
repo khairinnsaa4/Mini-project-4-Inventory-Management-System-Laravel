@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
-@section('title', 'Edit Supplier')
+@section('title', 'Edit Mitra Maison')
 
 @section('content')
 <div class="row justify-content-center">
     <div class="col-md-6">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h5 class="fw-bold mb-0">Edit Supplier</h5>
+            <h5 class="fw-bold mb-0 font-serif">Edit Mitra Maison / Distributor</h5>
             <a href="{{ route('suppliers.index') }}" class="btn btn-outline-secondary btn-sm">
                 Kembali
             </a>
@@ -17,7 +17,7 @@
                 @csrf
                 @method('PUT')
                 <div class="mb-3">
-                    <label class="form-label">Nama Supplier <span class="text-danger">*</span></label>
+                    <label class="form-label">Nama Maison / Perusahaan <span class="text-danger">*</span></label>
                     <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name', $supplier->name) }}" required>
                     @error('name')
                         <div class="invalid-feedback">{{ $message }}</div>

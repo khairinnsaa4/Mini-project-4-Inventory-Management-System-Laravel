@@ -1,13 +1,16 @@
 @extends('layouts.app')
 
-@section('title', 'Data Produk')
+@section('title', 'Koleksi Heels Mewah')
 
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h5 class="fw-bold mb-0">Data Produk</h5>
+    <div>
+        <h5 class="fw-bold mb-1 font-serif">Koleksi Heels Mewah</h5>
+        <p class="text-muted small mb-0">Manajemen inventaris siluet stiletto, bridal, mules, dan haute couture heels.</p>
+    </div>
     @if(Auth::user()->role === 'admin')
         <a href="{{ route('products.create') }}" class="btn btn-primary btn-sm">
-            <i class="bi bi-plus-lg me-1"></i> Tambah Produk
+            <i class="bi bi-plus-lg me-1"></i> Tambah Koleksi Baru
         </a>
     @endif
 </div>
@@ -16,12 +19,12 @@
 <div class="card p-3 mb-3">
     <form method="GET" action="{{ route('products.index') }}" class="row g-2 align-items-center">
         <div class="col-md-4">
-            <input type="text" name="search" class="form-control form-control-sm" placeholder="Cari nama atau SKU..." value="{{ request('search') }}">
+            <input type="text" name="search" class="form-control form-control-sm" placeholder="Cari nama heels atau SKU (misal: Louboutin, So Kate)..." value="{{ request('search') }}">
         </div>
 
         <div class="col-md-3">
             <select name="category_id" class="form-select form-select-sm">
-                <option value="">Semua Kategori</option>
+                <option value="">Semua Kategori Siluet</option>
                 @foreach($categories as $c)
                     <option value="{{ $c->id }}" {{ (string)request('category_id') === (string)$c->id ? 'selected' : '' }}>
                         {{ $c->name }}
@@ -64,13 +67,13 @@
                 <tr>
                     <th style="width: 50px;">No</th>
                     <th>Kode SKU</th>
-                    <th>Nama Produk</th>
-                    <th>Kategori</th>
-                    <th>Supplier</th>
-                    <th class="text-end">Harga</th>
+                    <th>Model Heels</th>
+                    <th>Siluet</th>
+                    <th>Maison / Distributor</th>
+                    <th class="text-end">Harga Butik</th>
                     <th class="text-center">Stok</th>
                     <th class="text-center">Status</th>
-                    <th class="text-end" style="width: 120px;">Aksi</th>
+                    <th class="text-end" style="width: 140px;">Aksi</th>
                 </tr>
             </thead>
             <tbody>
@@ -81,7 +84,7 @@
                             <span class="font-monospace text-dark" style="font-size: 0.8rem;">{{ $product->sku }}</span>
                         </td>
                         <td>
-                            <div class="fw-medium text-dark">{{ $product->name }}</div>
+                            <div class="fw-semibold text-dark">{{ $product->name }}</div>
                         </td>
                         <td>
                             <span class="badge text-bg-light border">{{ $product->category->name }}</span>
@@ -93,29 +96,32 @@
                                 <span class="text-muted small">-</span>
                             @endif
                         </td>
-                        <td class="text-end text-dark">Rp {{ number_format($product->price, 0, ',', '.') }}</td>
+                        <td class="text-end text-dark fw-medium">Rp {{ number_format($product->price, 0, ',', '.') }}</td>
                         <td class="text-center fw-semibold {{ $product->stock <= $product->minimum_stock ? 'text-danger' : 'text-dark' }}">
                             {{ $product->stock }}
                         </td>
                         <td class="text-center">
                             @if($product->stock <= 0)
-                                <span class="badge bg-danger-subtle text-danger">Habis</span>
+                                <span class="badge bg-danger-subtle text-danger">Sold Out</span>
                             @elseif($product->stock <= $product->minimum_stock)
-                                <span class="badge bg-warning-subtle text-warning">Menipis</span>
+                                <span class="badge bg-warning-subtle text-warning">Stok Kritis</span>
                             @else
-                                <span class="badge bg-success-subtle text-success">Aman</span>
+                                <span class="badge bg-success-subtle text-success">Tersedia</span>
                             @endif
                         </td>
                         <td class="text-end">
                             <div class="btn-group btn-group-sm">
-                                <a href="{{ route('stock.in', ['product_id' => $product->id]) }}" class="btn btn-light border" title="Tambah Stok">
-                                    <i class="bi bi-plus-lg"></i>
+                                <a href="{{ route('stock.out', ['product_id' => $product->id]) }}" class="btn btn-light border text-danger" title="Catat Terjual / Kasir VIP">
+                                    <i class="bi bi-bag-check"></i>
+                                </a>
+                                <a href="{{ route('stock.in', ['product_id' => $product->id]) }}" class="btn btn-light border text-success" title="Restock Masuk">
+                                    <i class="bi bi-box-arrow-in-down"></i>
                                 </a>
                                 @if(Auth::user()->role === 'admin')
-                                    <a href="{{ route('products.edit', $product) }}" class="btn btn-light border" title="Edit">
+                                    <a href="{{ route('products.edit', $product) }}" class="btn btn-light border" title="Edit Koleksi">
                                         <i class="bi bi-pencil"></i>
                                     </a>
-                                    <form method="POST" action="{{ route('products.destroy', $product) }}" class="d-inline" onsubmit="return confirm('Hapus produk ini?')">
+                                    <form method="POST" action="{{ route('products.destroy', $product) }}" class="d-inline" onsubmit="return confirm('Hapus koleksi heels ini?')">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-light border text-danger" title="Hapus">

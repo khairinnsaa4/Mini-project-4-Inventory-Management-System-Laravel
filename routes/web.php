@@ -46,4 +46,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/out', [StockController::class, 'storeOut'])->name('storeOut');
         Route::get('/history', [StockController::class, 'history'])->name('history');
     });
+
+    // Simulasi Penjualan Otomatis Real-time (Auto-Sales Bot)
+    Route::post('/auto-sale', [DashboardController::class, 'autoSale'])->name('stock.autoSale');
 });

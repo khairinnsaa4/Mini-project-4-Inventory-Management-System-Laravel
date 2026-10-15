@@ -1,12 +1,18 @@
-# Mini Project 4 — InvenSync (Laravel Inventory Management System)
+# Mini Project 4 — Maison Sole (Laravel Haute Couture Heels Inventory Management)
 > **Mata Kuliah:** Pemrograman Web  
 > **Pertemuan 5:** Laravel Fundamental (Refactoring & Migrasi P4 ke Laravel)  
-> **Teknologi:** Laravel 8.x + MySQL + Blade Template Engine + Bootstrap 5  
+> **Teknologi:** Laravel 8.x + MySQL + Blade Template Engine + Chart.js + Haute Couture Luxury UI/UX  
+> **Tema Inventori:** Koleksi Sepatu Heels Mewah & Ternama (Christian Louboutin, Cesare Paciotti, Manolo Blahnik, Jimmy Choo, Amina Muaddi, Mach & Mach)
 
 ---
 
-## 📌 Deskripsi Proyek
-**InvenSync (Mini Project 4)** adalah hasil transformasi dan refactoring sistem inventaris dari PHP Native (Pertemuan 4) menjadi aplikasi berbasis framework **Laravel**. Proyek ini menerapkan arsitektur **Model-View-Controller (MVC)**, Eloquent ORM, migrasi database version-controlled, seeder data uji, Blade templating, serta proteksi keamanan bawaan (CSRF protection, input validation, dan session management) tanpa menghilangkan aturan bisnis (*business rules*) persediaan barang yang telah dibangun pada P4.
+## 👠 Deskripsi Proyek
+**Maison Sole (Mini Project 4)** adalah hasil transformasi dan refactoring arsitektural menyeluruh dari aplikasi inventori PHP Native (Pertemuan 4) menjadi aplikasi modern berbasis **Laravel MVC Framework**. Mengusung tema butik mewah sepatu heels ternama dunia, proyek ini menggabungkan keanggunan estetika visual *haute couture* (Velvet Rouge `#8B1538`, Champagne Gold `#C5A059`, Obsidian `#1A1A1A`, tipografi *Playfair Display* & *Plus Jakarta Sans*) dengan disiplin rekayasa perangkat lunak standar industri.
+
+Aplikasi ini dilengkapi **fitur otomatisasi penjualan real-time** yang menjawab kebutuhan admin agar tidak perlu repot melakukan input manual transaksi yang terjual:
+1. **Simulasi Terjual Otomatis (Real-Time Auto-Sales Bot via Eloquent & DB::transaction):** Tombol 1-klik di dashboard admin yang mengeksekusi route `POST /auto-sale`, secara acak memilih koleksi heels yang sedang memiliki stok fisik, mencetak nomor faktur VIP (`MAI-VIP-XXXX`), memotong kuantitas stok secara atomik, dan langsung meng-update grafik analitik serta mutasi ledger secara instan.
+2. **Quick VIP Checkout Modal:** Modal kasir cepat di navbar untuk memilih produk dan mencatat penjualan instan tanpa berpindah halaman.
+3. **Interactive Visual Analytics (Chart.js):** Grafik tren mutasi restock vs penjualan 7 hari terakhir serta diagram distribusi siluet heels.
 
 ---
 
@@ -14,7 +20,7 @@
 | Fitur / Komponen | P4 (PHP Native) | P5 (Laravel Framework) |
 |---|---|---|
 | **Struktur Database** | `database/schema.sql` manual | `database/migrations/` (Version-controlled schema) |
-| **Data Pengujian** | SQL INSERT manual | `database/seeders/DatabaseSeeder.php` |
+| **Data Pengujian** | SQL INSERT manual | `database/seeders/DatabaseSeeder.php` (Koleksi Heels Mewah) |
 | **Akses Database** | PDO Prepared Statements manual | **Eloquent ORM** & Query Builder dinamis |
 | **CRUD Handler** | File `.php` terpisah di subfolder | **Resource Controllers** (`ProductController`, dll.) |
 | **Routing** | File-based direct URL | Centralized Routes di `routes/web.php` (Named Routes) |
@@ -33,16 +39,16 @@ Request (Browser)
 Route (routes/web.php)
    │
    ▼
-Controller (app/Http/Controllers/ProductController.php)
+Controller (app/Http/Controllers/ProductController.php / DashboardController.php)
    │
-   ├── Validasi Input ($request->validate())
-   ├── Panggil Model & Eloquent ORM (app/Models/Product.php)
+   ├── Validasi Form & Otorisasi ($request->validate())
+   ├── Eksekusi DB::transaction() & Eloquent ORM (app/Models/Product.php)
    │       │
    │       ▼
    │   Database MySQL (inventory_db)
    │
    ▼
-Response / View (resources/views/products/index.blade.php)
+Response / View (resources/views/dashboard.blade.php / products/index.blade.php)
 ```
 
 ---
@@ -50,126 +56,86 @@ Response / View (resources/views/products/index.blade.php)
 ## 🚀 Fitur Utama & Kepatuhan PPT Web 5
 1. **Resource Controller & Routing (Slide 12–18):**
    - Menggunakan `Route::resource('products', ProductController::class)`.
-   - Menggunakan named routes (`route('products.index')`, dll.) untuk mempermudah pemanggilan URL.
+   - Menggunakan named routes (`route('products.index')`, `route('stock.out')`, `route('stock.autoSale')`, dll.).
 2. **Eloquent Relationship (Slide 33–34):**
    - **One-to-One:** `User` hasOne `UserProfile` (`$user->profile`).
    - **One-to-Many:** `Category` hasMany `Product` (`$category->products`) dan `Product` belongsTo `Category` (`$product->category`).
    - **Many-to-Many:** `Product` belongsToMany `Supplier` via pivot table `product_suppliers` dengan eager loading `with(['category', 'suppliers'])`.
 3. **Database Migrations & Seeders (Slide 26–30):**
    - 7 file migration terstruktur dengan foreign key constraint dan referential integrity (`restrictOnDelete`, `cascadeOnDelete`).
-   - Seeder otomatis (`DatabaseSeeder`) untuk pengguna (admin & staff), kategori, supplier, produk, relasi junction, dan histori transaksi.
-4. **Katalog Produk Canggih (Slide 32 & 38):**
-   - Pencarian berdasarkan Nama Produk atau SKU.
-   - Filter berdasarkan Kategori.
-   - Sorting multi-kolom (`name`, `sku`, `price`, `stock`, `created_at`).
-   - Pagination 5 item per halaman dengan mempertahankan query parameter (`->withQueryString()`).
-5. **Transaksi Mutasi Stok (Slide 25–26):**
-   - Barang Masuk (IN): Menambah stok dan mencatat riwayat transaksi.
-   - Barang Keluar (OUT): Mengurangi stok dengan proteksi anti-minus (`DB::transaction`).
-   - Riwayat mutasi lengkap dengan filter tipe mutasi (IN / OUT).
-6. **Blade Layouts & Form Validation (Slide 21–25):**
-   - Menggunakan `@extends('layouts.app')` dan component alert `<x-alert>`.
-   - Proteksi `@csrf` di setiap form POST/PUT/DELETE.
-   - Menampilkan feedback error validasi dengan `@error` dan mempertahankan isian dengan `old()`.
+   - Seeder otomatis (`DatabaseSeeder`) dengan 12 heels ikonik dunia (Louboutin So Kate, Cesare Paciotti Blade, Manolo Blahnik Hangisi, Jimmy Choo Bing, Amina Muaddi Begum, Mach & Mach Double Bow), kategori siluet, maison partner, dan transaksi mutasi historis berjenjang.
+4. **Transaksi Stok Atomik (Slide 24–25):**
+   - **Restock Masuk (IN):** Penambahan kuantitas heels dengan proteksi `DB::transaction()`.
+   - **Penjualan Keluar (OUT):** Pengecekan stok fisik terkini sebelum dipotong, mencegah stok negatif.
+   - **Auto-Sales Bot (`POST /auto-sale`):** Simulasi transaksi instan bebas input manual untuk mendemonstrasikan perubahan data real-time.
+5. **Dashboard & Analitik Visual (Slide 31 + Chart.js):**
+   - 4 Kartu Metrik: Total Koleksi (`COUNT`), Valuasi Nilai Butik (`SUM(stock * price)`), Total Restock & Penjualan (`SUM(quantity)`), Alert Stok Kritis (`stock <= minimum_stock`).
+   - Line chart pergerakan 7 hari terakhir (Restock vs Terjual).
+   - Doughnut chart persebaran siluet heels (Stiletto, Bridal, Mules, Sculptural, Block).
 
 ---
 
-## 📁 Struktur Folder Project (Sesuai Slide 36)
+## 📁 Struktur Folder (Sesuai Slide 36 PPT Web 5)
 ```text
 mini_project_4/ (inventory-laravel)
 ├── app/
 │   ├── Http/
-│   │   └── Controllers/
-│   │       ├── AuthController.php        # Otentikasi login & logout
-│   │       ├── DashboardController.php   # Agregasi widget & analitik
-│   │       ├── ProductController.php     # Resource controller katalog produk
-│   │       ├── CategoryController.php    # Resource controller master kategori
-│   │       ├── SupplierController.php    # Resource controller master supplier
-│   │       └── StockController.php       # Transaksi barang masuk & keluar
-│   └── Models/
-│       ├── User.php                      # Model user & relasi
-│       ├── UserProfile.php               # One-to-one profile user
-│       ├── Category.php                  # One-to-many kategori
-│       ├── Product.php                   # Model produk & relasi
-│       ├── Supplier.php                  # Model supplier
-│       └── StockMovement.php             # Model histori mutasi stok
+│   │   ├── Controllers/      # DashboardController, ProductController, StockController, AuthController, dll.
+│   │   └── Middleware/       # Authenticate, RedirectIfAuthenticated, CheckRole
+│   └── Models/               # Product, Category, Supplier, StockMovement, User, UserProfile
+├── config/                   # Konfigurasi app, database, session, auth
 ├── database/
-│   ├── migrations/                       # 7 migration database
-│   └── seeders/
-│       └── DatabaseSeeder.php            # Seed data lengkap
+│   ├── migrations/           # 7 file migrasi skema tabel relasional
+│   └── seeders/              # DatabaseSeeder (koleksi heels, kategori, supplier, mutasi)
+├── public/                   # Entry point index.php, assets, .htaccess
 ├── resources/
-│   └── views/
-│       ├── auth/login.blade.php          # Tampilan login
-│       ├── categories/                   # View CRUD kategori
-│       ├── products/                     # View CRUD & listing produk
-│       ├── stock/                        # View transaksi in/out & history
-│       ├── suppliers/                    # View CRUD supplier
-│       ├── components/alert.blade.php    # Blade reusable component
-│       ├── layouts/app.blade.php         # Master Blade layout & navigation
-│       └── dashboard.blade.php           # Tampilan dashboard
+│   └── views/                # Blade layouts & template views (dashboard, products, stock, auth, dll.)
 ├── routes/
-│   └── web.php                           # Definisi seluruh rute aplikasi
-├── .env.example                          # Contoh variabel lingkungan
-├── .env                                  # Konfigurasi database & environment lokal
-├── artisan                               # Laravel Artisan CLI
-├── composer.json                         # Dependensi PHP
-├── index.php                             # Root redirection ke folder public/
-├── .gitignore
+│   └── web.php               # Centralized named routes & auto-sale endpoint
+├── storage/                  # Logs, framework cache, compiled views
+├── .env.example & .env       # Konfigurasi environment (DB_DATABASE=inventory_db)
+├── artisan                   # CLI tool Laravel
+├── composer.json
+├── index.php                 # Direct redirector ke public/ untuk kemudahan akses Apache
 └── README.md
 ```
 
 ---
 
-## 🛠️ Panduan Instalasi & Menjalankan
+## 🛠️ Panduan Instalasi & Penggunaan
 
 ### 1. Prasyarat
-- PHP >= 7.3 / 8.x
+- PHP versi 7.4 / 8.x
 - Composer
-- MySQL Server (XAMPP)
+- Web Server Apache & Database MySQL (via **XAMPP**)
 
-### 2. Konfigurasi Environment
-Pastikan file `.env` sudah ada dan dikonfigurasi ke database `inventory_db`:
-```ini
-APP_NAME="InvenSync Laravel"
-APP_ENV=local
-APP_KEY=base64:EOZ8bvkeBFoOkfT+W8vHmUlqTW63oCNLrl2zx/LfPbw=
-APP_DEBUG=true
-APP_URL=http://localhost
+### 2. Setup Database & Migrasi
+1. Buka **phpMyAdmin** (`http://localhost/phpmyadmin`) atau MySQL CLI.
+2. Buat database baru bernama `inventory_db`:
+   ```sql
+   CREATE DATABASE inventory_db;
+   ```
+3. Buka terminal di folder proyek (`mini_project_4`), lalu jalankan migrasi & seeder:
+   ```bash
+   php artisan migrate:fresh --seed
+   ```
+   *(Perintah ini akan membuat seluruh 7 tabel relasional dan mengisi data dummy koleksi heels ternama, akun admin & staff, serta riwayat mutasi).*
 
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=inventory_db
-DB_USERNAME=root
-DB_PASSWORD=
-```
-
-### 3. Migrasi & Seed Database
-Buka terminal di folder project `mini_project_4`, jalankan perintah berikut:
-```bash
-# Buat database inventory_db jika belum ada di MySQL
-# Jalankan migrasi dan seeder awal:
-php artisan migrate:fresh --seed
-```
-
-### 4. Menjalankan Aplikasi
-Aplikasi dapat dijalankan melalui salah satu cara berikut:
-
-**Opsi A (Menggunakan Artisan Serve):**
-```bash
-php artisan serve
-```
-Buka browser di: **`http://127.0.0.1:8000`**
-
-**Opsi B (Menggunakan XAMPP Apache):**
-Pastikan Apache & MySQL aktif di XAMPP Control Panel, lalu buka:
-- **`http://localhost/mini_project_4/public/`**
-- atau via alias: **`http://localhost/inventory-laravel/public/`**
+### 3. Menjalankan Aplikasi
+Aplikasi dapat dibuka dengan dua cara:
+1. **Via XAMPP / Apache:**
+   - Buka browser di: **`http://localhost/mini_project_4/public/`**  
+   - atau via alias folder: **`http://localhost/inventory-laravel/public/`**
+2. **Via Built-in Server Artisan:**
+   ```bash
+   php artisan serve
+   ```
+   Buka di **`http://127.0.0.1:8000`**
 
 ---
 
 ## 🔑 Akun Login Pengujian (Default)
-| Role | Username | Password | Keterangan |
+| Role | Username | Password | Hak Akses |
 |---|---|---|---|
-| **Admin** | `admin` | `password123` | Akses penuh seluruh master data & mutasi stok |
-| **Staff** | `staff` | `password123` | Akses operasional katalog produk & pencatatan stok |
+| **Admin** | `admin` | `password123` | Akses penuh (Koleksi, Siluet, Maison, Restock, VIP Checkout, Auto-Sales Bot) |
+| **Staff** | `staff` | `password123` | Akses operasional (Katalog Koleksi, Restock, VIP Checkout, Riwayat Ledger) |
