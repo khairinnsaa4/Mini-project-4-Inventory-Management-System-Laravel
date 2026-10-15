@@ -3,15 +3,17 @@
 @section('title', 'Kategori Siluet')
 
 @section('content')
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
     <div>
-        <h5 class="fw-bold mb-1 font-serif">Kategori & Siluet Heels</h5>
-        <p class="text-muted small mb-0">Klasifikasi siluet heels: Stiletto, Bridal, Mules, Sculptural, dan Platform.</p>
+        <h4 class="fw-bold mb-1 font-serif text-dark">Kategori Siluet Heels</h4>
+        <p class="text-muted small mb-0">Klasifikasi tipe desain sepatu hak tinggi untuk pengorganisasian katalog atelier.</p>
     </div>
     @if(Auth::user()->role === 'admin')
-        <a href="{{ route('categories.create') }}" class="btn btn-primary btn-sm">
-            <i class="bi bi-plus-lg me-1"></i> Tambah Siluet
-        </a>
+        <div>
+            <a href="{{ route('categories.create') }}" class="btn btn-primary btn-sm d-flex align-items-center gap-1 shadow-sm px-3">
+                <i class="bi bi-plus-lg"></i> Tambah Kategori Siluet
+            </a>
+        </div>
     @endif
 </div>
 
@@ -22,9 +24,9 @@
                 <tr>
                     <th style="width: 50px;">No</th>
                     <th>Nama Siluet / Kategori</th>
-                    <th>Karakteristik & Deskripsi</th>
-                    <th class="text-center">Jumlah Model</th>
-                    <th class="text-center">Total Stok (Pairs)</th>
+                    <th>Deskripsi Karakteristik</th>
+                    <th class="text-center">Varian Model</th>
+                    <th class="text-center">Total Pasang</th>
                     @if(Auth::user()->role === 'admin')
                         <th class="text-end" style="width: 100px;">Aksi</th>
                     @endif
@@ -34,21 +36,19 @@
                 @forelse($categories as $cat)
                     <tr>
                         <td class="text-muted small">{{ $loop->iteration }}</td>
-                        <td>
-                            <span class="fw-medium text-dark">{{ $cat->name }}</span>
-                        </td>
-                        <td class="text-muted small">{{ $cat->description ?: '-' }}</td>
+                        <td class="fw-semibold text-dark">{{ $cat->name }}</td>
+                        <td class="text-muted small" style="max-width: 320px;">{{ $cat->description ?: '-' }}</td>
                         <td class="text-center">
-                            <span class="badge text-bg-light border">{{ $cat->products_count }}</span>
+                            <span class="badge bg-light text-dark border px-2 py-1">{{ $cat->products_count }} Model</span>
                         </td>
-                        <td class="text-center">{{ $cat->total_stock ?? 0 }}</td>
+                        <td class="text-center fw-semibold text-dark">{{ $cat->total_stock ?? 0 }} psg</td>
                         @if(Auth::user()->role === 'admin')
                             <td class="text-end">
                                 <div class="btn-group btn-group-sm">
-                                    <a href="{{ route('categories.edit', $cat) }}" class="btn btn-light border" title="Edit">
+                                    <a href="{{ route('categories.edit', $cat) }}" class="btn btn-light border text-dark" title="Edit">
                                         <i class="bi bi-pencil"></i>
                                     </a>
-                                    <form method="POST" action="{{ route('categories.destroy', $cat) }}" class="d-inline" onsubmit="return confirm('Yakin hapus kategori ini?')">
+                                    <form method="POST" action="{{ route('categories.destroy', $cat) }}" class="d-inline" onsubmit="return confirm('Yakin ingin menghapus siluet kategori ini?')">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-light border text-danger" title="Hapus">
@@ -61,7 +61,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="6" class="text-center py-4 text-muted">Belum ada kategori.</td>
+                        <td colspan="6" class="text-center py-5 text-muted">Belum ada kategori yang ditambahkan.</td>
                     </tr>
                 @endforelse
             </tbody>

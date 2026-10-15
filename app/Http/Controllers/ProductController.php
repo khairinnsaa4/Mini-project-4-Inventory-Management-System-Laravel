@@ -34,7 +34,7 @@ class ProductController extends Controller
                 $query->where('category_id', $request->category_id);
             })
             ->orderBy($sortBy, $order)
-            ->paginate(5)
+            ->paginate(8)
             ->withQueryString();
 
         $categories = Category::orderBy('name')->get();

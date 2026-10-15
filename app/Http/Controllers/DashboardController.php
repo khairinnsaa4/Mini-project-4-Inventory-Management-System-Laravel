@@ -14,14 +14,31 @@ class DashboardController extends Controller
 {
     public function index()
     {
+        $user = Auth::user();
+
+        // 1. Total Koleksi Heels (COUNT) & Unit Ready
         $total_produk = Product::count();
-        $total_nilai = Product::sum(DB::raw('stock * price'));
+        $total_unit_ready = (int)Product::sum('stock');
+
+        // 2. Valuasi Inventaris Butik (SUM(stock * price))
+        $total_nilai = (float)Product::sum(DB::raw('stock * price'));
+
+        // 3. Heels Stok Menipis (stock <= minimum_stock)
         $total_low_stock = Product::whereColumn('stock', '<=', 'minimum_stock')->count();
 
-        $total_in = StockMovement::where('type', 'IN')->sum('quantity');
-        $total_out = StockMovement::where('type', 'OUT')->sum('quantity');
+        // 4. Statistik Perputaran Masuk & Keluar (Total Unit)
+        $total_in = (int)StockMovement::where('type', 'IN')->sum('quantity');
+        $total_out = (int)StockMovement::where('type', 'OUT')->sum('quantity');
 
-        // Data Grafik Tren Mutasi 7 Hari Terakhir (Chart.js)
+        // 5. Statistik Transaksi Hari Ini (Khusus Aktivitas Petugas Login)
+        $my_tx_today = StockMovement::where('user_id', $user->id)
+            ->whereDate('created_at', Carbon::today())
+            ->count();
+        $my_units_today = (int)StockMovement::where('user_id', $user->id)
+            ->whereDate('created_at', Carbon::today())
+            ->sum('quantity');
+
+        // 6. Data Grafik Tren Mutasi 7 Hari Terakhir (Chart.js)
         $chartDates = [];
         $chartSales = [];
         $chartRestock = [];
@@ -39,7 +56,7 @@ class DashboardController extends Controller
                 ->sum('quantity');
         }
 
-        // Data Grafik Distribusi Kategori Heels (Chart.js)
+        // 7. Data Grafik Distribusi Kategori Heels (Chart.js)
         $categoriesData = Category::withCount(['products as total_stock' => function ($query) {
             $query->select(DB::raw('COALESCE(SUM(stock), 0)'));
         }])->orderByDesc('total_stock')->get();
@@ -47,34 +64,35 @@ class DashboardController extends Controller
         $catLabels = $categoriesData->pluck('name')->toArray();
         $catStocks = $categoriesData->pluck('total_stock')->map(fn($v) => (int)$v)->toArray();
 
+        // 8. Daftar Produk Perlu Re-order
         $low_stock_products = Product::with('category')
             ->whereColumn('stock', '<=', 'minimum_stock')
             ->orderBy('stock')
-            ->get();
-
-        $recent_movements = StockMovement::with(['product', 'user'])
-            ->latest()
             ->take(6)
             ->get();
 
-        $available_products = Product::where('stock', '>', 0)
-            ->orderBy('name')
+        // 9. Aktivitas Mutasi Terkini
+        $recent_movements = StockMovement::with(['product', 'user.profile'])
+            ->latest('created_at')
+            ->take(6)
             ->get();
 
         return view('dashboard', compact(
             'total_produk',
+            'total_unit_ready',
             'total_nilai',
             'total_low_stock',
             'total_in',
             'total_out',
+            'my_tx_today',
+            'my_units_today',
             'chartDates',
             'chartSales',
             'chartRestock',
             'catLabels',
             'catStocks',
             'low_stock_products',
-            'recent_movements',
-            'available_products'
+            'recent_movements'
         ));
     }
 
@@ -88,10 +106,10 @@ class DashboardController extends Controller
 
         if (!$candidate) {
             return redirect()->route('dashboard')
-                ->with('error', 'Semua koleksi heels habis stok! Transaksi otomatis tidak dapat diproses.');
+                ->with('error', 'Semua koleksi heels habis stok! Simulasi otomatis tidak dapat dijalankan.');
         }
 
-        $qtySold = rand(1, min(2, $candidate->stock));
+        $qtySold = rand(1, min(2, (int)$candidate->stock));
         $invoiceCode = 'MAI-VIP-' . strtoupper(bin2hex(random_bytes(3)));
 
         DB::transaction(function () use ($candidate, $qtySold, $invoiceCode) {
@@ -107,6 +125,6 @@ class DashboardController extends Controller
         });
 
         return redirect()->route('dashboard')
-            ->with('success', "⚡ Transaksi Otomatis Real-time Berhasil! Terjual {$qtySold} pasang heels '{$candidate->name}' (Faktur #{$invoiceCode}). Stok berkurang dan grafik ter-update!");
+            ->with('success', "Simulasi Berhasil: Terjual {$qtySold} pasang '{$candidate->name}' (Faktur #{$invoiceCode}). Stok berkurang dan grafik ter-update!");
     }
 }

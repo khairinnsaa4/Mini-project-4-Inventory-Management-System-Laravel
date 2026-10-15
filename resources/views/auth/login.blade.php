@@ -3,170 +3,241 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Boutique Access | Maison Sole Atelier</title>
-    <!-- Google Fonts: Playfair Display & Plus Jakarta Sans -->
+    <title>Portal Akses Atelier | Maison Sole</title>
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <style>
         :root {
             --rouge-primary: #8B1538;
-            --rouge-hover: #720E2C;
-            --bg-lux: #FAF7F5;
-            --card-border: #EFE7E2;
-            --obsidian: #18181B;
+            --rouge-hover: #700F2B;
+            --rouge-light: #FDF2F4;
+            --gold-accent: #C5A059;
+            --bg-body: #FBF9F7;
+            --border-soft: #EFE7E2;
+            --text-dark: #1C1917;
+            --text-muted: #78716C;
+        }
+
+        * {
+            box-sizing: border-box;
         }
 
         body {
-            background-color: var(--bg-lux);
+            background-color: var(--bg-body);
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(139, 21, 56, 0.04) 0%, transparent 45%),
+                radial-gradient(circle at 85% 85%, rgba(197, 160, 89, 0.05) 0%, transparent 45%);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            color: var(--text-dark);
             padding: 1.5rem;
-            color: #27272A;
-            background-image: radial-gradient(circle at 10% 20%, rgba(139, 21, 56, 0.04) 0%, transparent 40%),
-                              radial-gradient(circle at 90% 80%, rgba(197, 160, 89, 0.06) 0%, transparent 40%);
-        }
-
-        .font-serif {
-            font-family: 'Playfair Display', Georgia, serif;
+            margin: 0;
         }
 
         .login-card {
             width: 100%;
-            max-width: 440px;
+            max-width: 420px;
             background: #FFFFFF;
-            border: 1px solid var(--card-border);
+            border: 1px solid var(--border-soft);
             border-radius: 16px;
-            box-shadow: 0 10px 40px rgba(139, 21, 56, 0.06);
-            overflow: hidden;
+            box-shadow: 0 12px 36px rgba(28, 25, 23, 0.05);
+            padding: 2.75rem 2.25rem;
         }
 
-        .login-brand-icon {
-            width: 48px;
-            height: 48px;
-            background: linear-gradient(135deg, var(--rouge-primary), #B31B47);
+        .brand-emblem {
+            width: 52px;
+            height: 52px;
+            background: linear-gradient(135deg, var(--rouge-primary), #A61A43);
             color: #FFFFFF;
-            border-radius: 12px;
+            border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
-            margin: 0 auto 1rem auto;
-            box-shadow: 0 6px 18px rgba(139, 21, 56, 0.25);
+            font-size: 1.6rem;
+            margin: 0 auto 1.25rem auto;
+            box-shadow: 0 8px 20px rgba(139, 21, 56, 0.22);
         }
 
-        .form-control {
-            border-radius: 8px;
-            border-color: #E4DCD7;
-            padding: 0.65rem 0.95rem;
-            font-size: 0.9rem;
+        .brand-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            letter-spacing: -0.01em;
+            margin-bottom: 0.25rem;
         }
 
-        .form-control:focus {
-            border-color: var(--rouge-primary);
-            box-shadow: 0 0 0 3px rgba(139, 21, 56, 0.12);
-        }
-
-        .btn-primary {
-            background-color: var(--rouge-primary);
-            border-color: var(--rouge-primary);
-            color: #FFFFFF;
+        .brand-subtitle {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-muted);
             font-weight: 600;
-            padding: 0.75rem;
-            border-radius: 8px;
-            letter-spacing: 0.3px;
+            margin-bottom: 2rem;
+        }
+
+        .form-label {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #44403C;
+            margin-bottom: 0.4rem;
+        }
+
+        .input-group-custom {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-group-custom .input-icon {
+            position: absolute;
+            left: 14px;
+            color: #A8A29E;
+            font-size: 1rem;
+            pointer-events: none;
+            transition: color 0.2s ease;
+            z-index: 5;
+        }
+
+        .input-group-custom .form-control {
+            border: 1px solid #E7DFD9;
+            border-radius: 10px;
+            padding: 0.72rem 1rem 0.72rem 2.6rem;
+            font-size: 0.92rem;
+            color: var(--text-dark);
+            background-color: #FCFBFB;
             transition: all 0.2s ease;
+            width: 100%;
         }
 
-        .btn-primary:hover {
-            background-color: var(--rouge-hover);
-            border-color: var(--rouge-hover);
-            box-shadow: 0 4px 14px rgba(139, 21, 56, 0.3);
+        .input-group-custom .form-control:focus {
+            background-color: #FFFFFF;
+            border-color: var(--rouge-primary);
+            box-shadow: 0 0 0 3px rgba(139, 21, 56, 0.1);
+            outline: none;
         }
 
-        .test-badge {
+        .input-group-custom .toggle-password {
+            position: absolute;
+            right: 12px;
+            background: none;
+            border: none;
+            color: #A8A29E;
             cursor: pointer;
-            transition: background-color 0.15s ease;
+            padding: 4px;
+            font-size: 1.05rem;
+            z-index: 5;
         }
 
-        .test-badge:hover {
-            background-color: #FDF2F4 !important;
-            border-color: var(--rouge-primary) !important;
+        .input-group-custom .toggle-password:hover {
+            color: var(--text-dark);
+        }
+
+        .btn-atelier {
+            background-color: var(--rouge-primary);
+            border: none;
+            color: #FFFFFF;
+            font-size: 0.92rem;
+            font-weight: 600;
+            padding: 0.82rem;
+            border-radius: 10px;
+            width: 100%;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 14px rgba(139, 21, 56, 0.22);
+            margin-top: 0.75rem;
+        }
+
+        .btn-atelier:hover {
+            background-color: var(--rouge-hover);
+            box-shadow: 0 6px 18px rgba(139, 21, 56, 0.32);
+            color: #FFFFFF;
+        }
+
+        .login-footer {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #F5EFEB;
+            text-align: center;
+            font-size: 0.75rem;
+            color: #A8A29E;
         }
     </style>
 </head>
 <body>
 
 <div class="login-card">
-    <div class="p-4 p-sm-5">
-        <div class="text-center mb-4">
-            <div class="login-brand-icon">
-                <i class="bi bi-gem"></i>
+    <div class="text-center">
+        <div class="brand-emblem">
+            <i class="bi bi-gem"></i>
+        </div>
+        <h1 class="brand-title">Maison Sole</h1>
+        <p class="brand-subtitle">Haute Heels Atelier</p>
+    </div>
+
+    @if(session('error'))
+        <div class="alert alert-danger py-2 px-3 small d-flex align-items-center mb-3 rounded-2 border-0 shadow-sm" style="background-color: #FEF2F2; color: #991B1B;">
+            <i class="bi bi-exclamation-circle-fill me-2 fs-6"></i>
+            <div>{{ session('error') }}</div>
+        </div>
+    @endif
+
+    <form method="POST" action="{{ route('login.proses') }}">
+        @csrf
+        <div class="mb-3">
+            <label for="username" class="form-label">Username</label>
+            <div class="input-group-custom">
+                <i class="bi bi-person input-icon"></i>
+                <input type="text" class="form-control @error('username') is-invalid @enderror" id="username" name="username" value="{{ old('username') }}" placeholder="Masukkan username" required autofocus autocomplete="username">
             </div>
-            <h4 class="fw-bold mb-1 font-serif text-dark" style="letter-spacing: 0.02em;">Maison Sole</h4>
-            <p class="text-muted small mb-0 text-uppercase" style="letter-spacing: 1.5px; font-size: 0.72rem;">Haute Heels Boutique Atelier (Laravel)</p>
+            @error('username')
+                <small class="text-danger mt-1 d-block">{{ $message }}</small>
+            @enderror
         </div>
 
-        @if(session('error'))
-            <div class="alert alert-danger py-2 px-3 small d-flex align-items-center mb-3 rounded-2 border-0 shadow-sm" style="background-color: #FEF2F2; color: #991B1B;">
-                <i class="bi bi-exclamation-circle-fill me-2 fs-6"></i>
-                <div>{{ session('error') }}</div>
+        <div class="mb-4">
+            <label for="password" class="form-label">Kata Sandi</label>
+            <div class="input-group-custom">
+                <i class="bi bi-lock input-icon"></i>
+                <input type="password" class="form-control @error('password') is-invalid @enderror" id="password" name="password" placeholder="Masukkan kata sandi" required autocomplete="current-password" style="padding-right: 2.5rem;">
+                <button type="button" class="toggle-password" onclick="togglePasswordVisibility()" title="Tampilkan sandi">
+                    <i class="bi bi-eye" id="toggleIcon"></i>
+                </button>
             </div>
-        @endif
-
-        <form method="POST" action="{{ route('login.proses') }}">
-            @csrf
-            <div class="mb-3">
-                <label for="username" class="form-label small fw-semibold text-muted">Username Pengguna</label>
-                <div class="input-group">
-                    <span class="input-group-text bg-light border-end-0 text-muted" style="border-color: #E4DCD7;"><i class="bi bi-person"></i></span>
-                    <input type="text" class="form-control border-start-0 @error('username') is-invalid @enderror" id="username" name="username" value="{{ old('username') }}" placeholder="Contoh: admin atau staff" required autofocus autocomplete="username">
-                </div>
-                @error('username')
-                    <small class="text-danger mt-1 d-block">{{ $message }}</small>
-                @enderror
-            </div>
-
-            <div class="mb-4">
-                <label for="password" class="form-label small fw-semibold text-muted">Kata Sandi (Password)</label>
-                <div class="input-group">
-                    <span class="input-group-text bg-light border-end-0 text-muted" style="border-color: #E4DCD7;"><i class="bi bi-lock"></i></span>
-                    <input type="password" class="form-control border-start-0 @error('password') is-invalid @enderror" id="password" name="password" placeholder="Masukkan password Anda" required autocomplete="current-password">
-                </div>
-                @error('password')
-                    <small class="text-danger mt-1 d-block">{{ $message }}</small>
-                @enderror
-            </div>
-
-            <button type="submit" class="btn btn-primary w-100 shadow-sm mb-3">
-                Masuk ke Atelier
-            </button>
-        </form>
-
-        <div class="border-top pt-3 mt-4 text-center">
-            <p class="text-muted small mb-2 fw-semibold" style="font-size: 0.75rem;">Akun Uji Coba Cepat (Klik untuk isi):</p>
-            <div class="d-flex justify-content-center gap-2">
-                <span class="badge bg-light text-dark border p-2 test-badge" onclick="fillLogin('admin', 'password123')">
-                    <i class="bi bi-shield-lock-fill text-danger me-1"></i> Admin: <strong>admin</strong>
-                </span>
-                <span class="badge bg-light text-dark border p-2 test-badge" onclick="fillLogin('staff', 'password123')">
-                    <i class="bi bi-person-badge text-secondary me-1"></i> Staff: <strong>staff</strong>
-                </span>
-            </div>
-            <div class="text-muted mt-2" style="font-size: 0.7rem;">Password: <code>password123</code></div>
+            @error('password')
+                <small class="text-danger mt-1 d-block">{{ $message }}</small>
+            @enderror
         </div>
+
+        <button type="submit" class="btn btn-atelier">
+            Masuk ke Atelier
+        </button>
+    </form>
+
+    <div class="login-footer">
+        <span>Sistem Inventaris Persediaan Butik Resmi</span>
     </div>
 </div>
 
 <script>
-function fillLogin(user, pass) {
-    document.getElementById('username').value = user;
-    document.getElementById('password').value = pass;
+function togglePasswordVisibility() {
+    const passwordInput = document.getElementById('password');
+    const toggleIcon = document.getElementById('toggleIcon');
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        toggleIcon.classList.remove('bi-eye');
+        toggleIcon.classList.add('bi-eye-slash');
+    } else {
+        passwordInput.type = 'password';
+        toggleIcon.classList.remove('bi-eye-slash');
+        toggleIcon.classList.add('bi-eye');
+    }
 }
 </script>
 
