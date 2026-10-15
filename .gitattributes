@@ -1,6 +1,27 @@
 * text=auto
 
+# 1. Pastikan seluruh file tampilan dideteksi sebagai Blade
 *.blade.php diff=html
+*.blade.php linguist-language=Blade
+*.blade.php linguist-detectable=true
+
+# 2. Hilangkan JavaScript (webpack.mix.js) dari statistik bahasa
+*.js linguist-detectable=false
+*.js linguist-vendored
+
+# 3. Tandai file boilerplate & konfigurasi Laravel bawaan agar tidak mendominasi PHP
+# (Sehingga porsi Blade naik menjadi ~70%)
+config/** linguist-vendored
+config/** linguist-detectable=false
+bootstrap/** linguist-vendored
+bootstrap/** linguist-detectable=false
+database/migrations/** linguist-vendored
+database/migrations/** linguist-detectable=false
+server.php linguist-vendored
+server.php linguist-detectable=false
+public/index.php linguist-vendored
+public/index.php linguist-detectable=false
+
 *.css diff=css
 *.html diff=html
 *.md diff=markdown
